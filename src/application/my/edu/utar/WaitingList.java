@@ -17,8 +17,24 @@ public class WaitingList {
 		
 	}
 	
-	public void addWaiting() {
-		
+	public void addWaiting(int userID) {
+	    String query = "INSERT INTO waiting_list (userID) VALUES (?)";
+
+	    try (PreparedStatement statement = connection.prepareStatement(query)) {
+	        statement.setInt(1, userID);
+	        int rowsInserted = statement.executeUpdate();
+	        if (rowsInserted > 0) {
+	        	System.out.println("\n==============================================");
+	            System.out.println("   New waiting record added successfully.");
+	            System.out.println("==============================================");
+	        } else {
+	        	System.out.println("\n==============================================");
+	            System.out.println("   Failed to add new waiting record.");
+	            System.out.println("==============================================");
+	        }
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    }	
 	}
 	public void getWaiting(int userID) {
 		String query = "SELECT w.waitListID, u.username, u.memberLevel, w.created_at " +
@@ -89,18 +105,18 @@ public class WaitingList {
 		return roomType;
 	}
 
-//	public static void main(String[]args) {
-//		dbConnector db=new dbConnector();
-//		try {
-//			Connection connection=dbConnector.getConnection();
-//			WaitingList w = new WaitingList(connection);
-//			w.removeWaiting(2);
-//		} catch (SQLException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-//		
-//	}
+	public static void main(String[]args) {
+		dbConnector db=new dbConnector();
+		try {
+			Connection connection=dbConnector.getConnection();
+			WaitingList w = new WaitingList(connection);
+			w.addWaiting(1);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
 
 	
 	
