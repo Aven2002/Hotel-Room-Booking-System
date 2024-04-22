@@ -105,18 +105,18 @@ public class WaitingList {
 		return roomType;
 	}
 
-	public static void main(String[]args) {
-		dbConnector db=new dbConnector();
-		try {
-			Connection connection=dbConnector.getConnection();
-			WaitingList w = new WaitingList(connection);
-			w.addWaiting(5);
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-	}
+//	public static void main(String[]args) {
+//		dbConnector db=new dbConnector();
+//		try {
+//			Connection connection=dbConnector.getConnection();
+//			WaitingList w = new WaitingList(connection);
+//			w.addWaiting(5);
+//		} catch (SQLException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//		
+//	}
 
 	
 	
