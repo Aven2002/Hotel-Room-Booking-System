@@ -246,12 +246,13 @@ public void signUpPhase() {
             }
         
          //Establish connection
-        public void initializeConnection() {
+        public Connection initializeConnection() {
             try {
                 connection = dbConnector.getConnection();
             } catch (SQLException e) {
                 e.printStackTrace();
             }
+            return connection;
         }
         
 public boolean isValidFullName(String fullName) {

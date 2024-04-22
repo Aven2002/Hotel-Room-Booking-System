@@ -13,8 +13,8 @@ public class Printer {
 
 	}
 	
-	public static void main(String[]args) {
-		Printer print=new Printer();
-		print.printInfo("Aven","VIP","VIP");
-	}
+//	public static void main(String[]args) {
+//		Printer print=new Printer();
+//		print.printInfo("Aven","VIP","VIP");
+//	}
 }
