@@ -53,6 +53,13 @@ public class WaitingList {
 		
 	}
 	
+	public String getRoomType(String memberLevel) {
+		String roomType;
+		if(memberLevel.equalsIgnoreCase("VIP")) {
+			roomType
+		}
+		
+	}
 
 
 	
