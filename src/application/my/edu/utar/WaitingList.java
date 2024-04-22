@@ -110,7 +110,7 @@ public class WaitingList {
 		try {
 			Connection connection=dbConnector.getConnection();
 			WaitingList w = new WaitingList(connection);
-			w.addWaiting(1);
+			w.addWaiting(5);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
