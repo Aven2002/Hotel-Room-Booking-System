@@ -5,16 +5,73 @@ import java.sql.*;
 
 public class User{
 	private final Scanner scanner =new Scanner(System.in);
-	//private Connection connection;
-	private AppManager app=new AppManager();
+	private Connection connection;
+	private int userID;
     private String username;
     private String phoneNum;
     private String password;
     private String email;
     private String fullName;
     
-    
-public void signUpPhase(Connection connection) {
+    public static void main(String[]args) {
+    	User user=new User();
+    	user.welcomePage();
+    }
+    public User() {
+    	initializeConnection();
+    }
+    public void welcomePage() {
+        System.out.println("\n@===================================@");
+        System.out.println("| Welcome to Hotel Booking System   |");
+        System.out.println("|===================================|");
+        System.out.println("|       1. Log in                   |");
+        System.out.println("|       2. Sign up                  |");
+        System.out.println("|       3. Continue as guest        |");
+        System.out.println("|       4. Exit                     |");
+        System.out.println("@===================================@");
+        int choice;
+        try {
+            System.out.print("Enter your choice: ");
+            choice = scanner.nextInt();
+            scanner.nextLine();
+            switch (choice) {
+                case 1:
+                    loginPhase();
+                    break;
+                case 2:
+                   signUpPhase();
+                    break;
+                case 3:
+                    displayMenu();
+                    break;
+                case 4:
+                	goodbyeMessage();
+                	return;
+			default:
+                    System.out.println("\n==========================================");
+                    System.out.println("     Error Message: Invalid Selection     ");
+                    System.out.println("==========================================");
+                    System.out.println("Please try again ...");
+                    welcomePage();
+            }
+        } catch (InputMismatchException e) {
+            System.out.println("\n==========================================");
+            System.out.println("    Error Message: Invalid Input Format   ");
+            System.out.println("==========================================");
+            System.out.println("Please enter a valid integer choice (1-4) ...");
+            scanner.nextLine();
+            welcomePage();
+        }
+    }
+
+public void goodbyeMessage() {
+    System.out.println("\n===============================");
+    System.out.println("                               ");
+    System.out.println("   Goodbye! Have a nice day!   ");
+    System.out.println("                               ");
+    System.out.println("===============================");
+}
+public void signUpPhase() {
 
         System.out.println("\n=============================");
 		System.out.println("     Account Registration    ");
@@ -27,7 +84,7 @@ public void signUpPhase(Connection connection) {
 		        System.out.println("  Error Message: Invalid full name format     ");
 		        System.out.println("==============================================");
 		        System.out.println("Please try again ...");
-		        signUpPhase(connection);
+		        signUpPhase();
 		    }
 
 		    System.out.print("Enter your phone number (e.g., 0102223333): ");
@@ -39,7 +96,7 @@ public void signUpPhase(Connection connection) {
 		        System.out.println("  Contact number must consist 10 to 15 digits.   ");
 		        System.out.println("=================================================");
 		        System.out.println("Please try again ...");
-		        signUpPhase(connection);
+		        signUpPhase();
 		    }
 
 		    System.out.print("Enter your email address (e.g., maccding@outlook.com): ");
@@ -51,7 +108,7 @@ public void signUpPhase(Connection connection) {
 		        System.out.println("  Email address must follow the standard format   ");
 		        System.out.println("==================================================");
 		        System.out.println("Please try again ...");
-		        signUpPhase(connection);
+		        signUpPhase();
 		    }
 
 		    System.out.print("Enter your username (e.g., macc2020): ");
@@ -63,7 +120,7 @@ public void signUpPhase(Connection connection) {
 		        System.out.println("=================================================================================");
 
 		        System.out.println("Please try again ...");
-		        signUpPhase(connection);
+		        signUpPhase();
 		    }
 
 		    System.out.print("Enter your password: ");
@@ -88,7 +145,7 @@ public void signUpPhase(Connection connection) {
 		            System.out.println("        Account Successfully Created             ");
 		            System.out.println("   You can now log in using your credentials     ");
 		            System.out.println("=================================================");
-		            loginPhase(connection);
+		            loginPhase();
 		        }
 		    } catch (SQLException e) {
 		        e.printStackTrace();
@@ -96,11 +153,11 @@ public void signUpPhase(Connection connection) {
 		        System.out.println("    Error Message: Account Creation Failed   ");
 		        System.out.println("=============================================");
 		        System.out.println("Please try again ...");
-		        app.displayMenu();
+		        displayMenu();
 		    }
 }
      // Login
-        public void loginPhase(Connection connection) {
+        public void loginPhase() {
             System.out.println("\n=============================");
             System.out.println("           Login             ");
             System.out.println("=============================");
@@ -116,8 +173,10 @@ public void signUpPhase(Connection connection) {
                 ResultSet resultSet = statement.executeQuery();
 
                 if (resultSet.next()) {
+                	int userID = resultSet.getInt("userID");
                     System.out.println("\nLogin successful.............\n");
-                    app.displayMenu();
+                    setUserID(userID);
+                    displayMenu();
                 } else {
                     System.out.println("\n===================================");
                     System.out.println("   Invalid username or password    ");
@@ -125,8 +184,71 @@ public void signUpPhase(Connection connection) {
                     System.out.println("           credentials             ");
                     System.out.println("===================================");
                     System.out.println("Please try again.............");
-                    app.welcomePage();
+                    welcomePage();
                 }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        // Menu
+        public void displayMenu() {
+                System.out.println("\n@=============================@");
+                System.out.println("|         Main Menu           |");
+                System.out.println("|=============================|");
+                System.out.println("|  1. Check Avaiable Room     |");
+                System.out.println("|  2. Manage Booking          |");
+                System.out.println("|  3. Trace Waiting Status    |");
+                System.out.println("|  4. Quit                    |");
+                System.out.println("@=============================@");
+
+            try {
+                System.out.print("Enter your choice: ");
+                int choice = scanner.nextInt();
+                //scanner.nextLine();
+                processChoice(choice);
+            } catch (InputMismatchException e) {
+                System.out.println("");
+                System.out.println("\n=============================================");
+                System.out.println("    Error Message: Invalid Input Format   ");
+                System.out.println("==============================================");
+                System.out.println("Please try again ...\n");
+                scanner.nextLine();
+                displayMenu();
+            }
+        }
+
+        public void processChoice(int choice) {
+                switch (choice) {
+                    case 1:
+                       //Room room=new Room(connection);
+                       // room.checkRoom();
+                        break;
+                    case 2:
+                       // Booking booking=new Booking();
+                       // booking.bookingMenu();
+                        break;
+                    case 3:
+                        WaitingList wait_list=new WaitingList(connection);
+                        wait_list.getWaiting(getUserID());
+                        break;
+                    case 4:
+                        welcomePage();
+                        break;
+                    default:
+                        System.out.println("");
+                        System.out.println("\n=========================================");
+                        System.out.println("    Error Message: Invalid Selection     ");
+                        System.out.println("=========================================");
+                        System.out.println("Please try again ...\n");
+                        scanner.nextLine();
+                        displayMenu();
+                }
+            }
+        
+         //Establish connection
+        public void initializeConnection() {
+            try {
+                connection = dbConnector.getConnection();
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -146,5 +268,12 @@ public boolean isValidEmail(String email) {
 
 public boolean isValidUsername(String username) {
     return username.matches("[a-zA-Z0-9]{5,}");
+}
+
+public int getUserID() {
+	return userID;
+}
+public void setUserID(int userID) {
+	this.userID=userID;
 }
 }
