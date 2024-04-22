@@ -18,24 +18,27 @@ public class WaitingList {
 		
 	}
 	public void getWaiting(int userID) {
-		String query = "SELECT w.waitListID, u.username, w.created_at " +
+		String query = "SELECT w.waitListID, u.username, u.memberLevel, w.created_at " +
 	               "FROM waiting_list w " +
 	               "INNER JOIN user_account u ON w.userID = u.userID " +
 	               "WHERE w.userID = ?";
 	try (PreparedStatement statement = connection.prepareStatement(query)) {
-	    statement.setInt(1, userID); // Use the userID obtained from login
+	    statement.setInt(1, userID); 
 	    ResultSet resultSet = statement.executeQuery();
 
 	    if (resultSet.next()) {
 	        int waitingID = resultSet.getInt("waitListID");
 	        String username = resultSet.getString("username");
 	        Timestamp timestamp = resultSet.getTimestamp("created_at");
+	        String memberLevel=resultSet.getString("memberLevel");
+	        String roomType=getRoomType(memberLevel);
 
 	        System.out.println("\n==============================================");
 	        System.out.println("                Waiting Status                 ");
 	        System.out.println("==============================================");
 	        System.out.println("   Waiting ID   : " + waitingID);
 	        System.out.println("   Username     : " + username);
+	        System.out.println("   Room Type    : "+ roomType);
 	        System.out.println("   Created At   : " + timestamp);
 	        System.out.println("==============================================");
 	    } else {
@@ -56,9 +59,13 @@ public class WaitingList {
 	public String getRoomType(String memberLevel) {
 		String roomType;
 		if(memberLevel.equalsIgnoreCase("VIP")) {
-			roomType
+			roomType="VIP";
+		}else if(memberLevel.equalsIgnoreCase("Member")) {
+			roomType="Deluxe";
+		}else {
+			roomType="Standard";
 		}
-		
+		return roomType;
 	}
 
 
