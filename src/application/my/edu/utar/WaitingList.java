@@ -60,9 +60,9 @@ public class WaitingList {
 	        System.out.println("   Created At   : " + timestamp);
 	        System.out.println("==============================================");
 	    } else {
-	    	System.out.println("\n==============================================");
-	        System.out.println("     No waiting record found for the user.");
-	        System.out.println("==============================================");
+	    	System.out.println("\n============================================================");
+	        System.out.println("  Dear customer, you are not quering in the waiting list.");
+	        System.out.println("=============================================================");
 	    }
 	    user.displayMenu();
 	} catch (SQLException e) {

@@ -23,10 +23,9 @@ public class Booking {
 		System.out.println("          Booking Menu Options          ");
 		System.out.println("========================================");
 		System.out.println("  1. Review Booking Information         ");
-		System.out.println("  2. Search Booking                     ");
-		System.out.println("  3. Create Booking                     ");
-		System.out.println("  4. Cancel Booking                     ");
-		System.out.println("  5. Back                               ");
+		System.out.println("  2. Create Booking                     ");
+		System.out.println("  3. Cancel Booking                     ");
+		System.out.println("  4. Back                               ");
 		System.out.println("========================================");
 		try {
 		System.out.print("Enter your choice: ");
@@ -37,13 +36,11 @@ public class Booking {
 		{
 			case 1: reviewBookingInfo();
 				break;
-			case 2: searchBooking(bookingID);
+			case 2: setBooking(userID);
 					break;
-			case 3: setBooking(userID);
+			case 3: cancelBooking();
 					break;
-			case 4: cancelBooking();
-					break;
-			case 5: 
+			case 4: 
 				user.displayMenu();
 				break;
 		default: 
@@ -66,8 +63,10 @@ public class Booking {
 	}
 	
 	public void reviewBookingInfo() {
-		System.out.println(userID);
 		String name=user.getUsername(userID);
+		if(name==null) {
+			name="Guest";
+		}
 		String member_type=user.getMemberLevel(userID);
 		String room_type=room.getRoomType(member_type);
 		printer.printInfo(name,member_type,room_type);
@@ -156,9 +155,9 @@ public class Booking {
 	                int successfulInserts = Arrays.stream(batchResults).sum();
 	                
 	                if (successfulInserts == roomIDs.size()) {
-	                    System.out.println("\n======================================================");
+	                    System.out.println("\n===========================================================");
 	                    System.out.println("    Confirmation Message: Booking created successfully");
-	                    System.out.println("======================================================");
+	                    System.out.println("===========================================================");
 	                    room.updateRoomStatus(roomIDs);
 	                } else {
 	                    System.out.println("\n======================================================");
