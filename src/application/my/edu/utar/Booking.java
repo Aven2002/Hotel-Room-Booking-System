@@ -36,7 +36,7 @@ public class Booking {
 		{
 //			case 1: createBooking(userId,roomID);
 //					break;
-			case 2: searchBooking(1);
+			case 2: searchBooking(8);
 					break;
 			case 3: cancelBooking();
 					break;
@@ -65,11 +65,7 @@ public class Booking {
 	}
 	
 	public void cancelBooking() {
-		try {
-			connection = dbConnector.getConnection();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
+		user.initializeConnection();
 		System.out.print("Enter the correspond booking ID to process booking cancelation :");
 		try {
 		bookingID=scanner.nextInt();
@@ -82,7 +78,7 @@ public class Booking {
 	            System.out.println("Please try again ...\n");
 	            cancelBooking();
 		}
-		
+		//Remove from booking table
 		if (searchBooking(bookingID)) {
 		        System.out.println("Do you want to continue the booking cancellation process? (Yes || No)");
 		        String choice = scanner.nextLine();
@@ -96,6 +92,7 @@ public class Booking {
 		                        System.out.println("  Confirmation Message: Booking with ID " + bookingID + " successfully cancelled.");
 		                        System.out.println("===================================================================");
 		                    }
+		         
 		                } catch (SQLException e) {
 		                    e.printStackTrace();
 		                }
@@ -104,7 +101,28 @@ public class Booking {
                      System.out.println("  Error Message: Booking with ID " + bookingID + " is not being cancelled.");
                      System.out.println("===============================================================");
              }
-			} 
+			}
+		//Remove from waiting_list table
+		 String checkWaitingQuery = "SELECT * FROM waiting_list WHERE bookingID = ?";
+		    try (PreparedStatement checkStatement = connection.prepareStatement(checkWaitingQuery)) {
+		        checkStatement.setInt(1, bookingID);
+		        ResultSet checkResultSet = checkStatement.executeQuery();
+		        
+		        // If the booking ID is in the waiting list, remove it
+		        if (checkResultSet.next()) {
+		            String removeWaitingQuery = "DELETE FROM waiting_list WHERE bookingID = ?";
+		            try (PreparedStatement removeStatement = connection.prepareStatement(removeWaitingQuery)) {
+		                removeStatement.setInt(1, bookingID);
+		                int rowsAffected = removeStatement.executeUpdate();
+		                if (rowsAffected > 0) {
+		                    System.out.println("  Confirmation Message: You have been removed from the waiting list");
+		                    System.out.println("===============================================================");
+		                }
+		            }
+		        }
+		    } catch (SQLException e) {
+		        e.printStackTrace();
+		    }
 		bookingMenu();
 	}
 	
@@ -115,12 +133,10 @@ public class Booking {
 	        try (ResultSet resultSet = statement.executeQuery()) {
 	            if (resultSet.next()) {
 	                int bookedID = resultSet.getInt("bookingID");
-	                int roomID = resultSet.getInt("roomID");
 	                Timestamp created = resultSet.getTimestamp("created_at");
 
 	                System.out.println("\n===========================================");
 	                System.out.println("    Booking ID    : " + bookedID);
-	                System.out.println("    Room ID       : " + roomID);
 	                System.out.println("    Creation Date : " + created);
 	                System.out.println("===========================================");
 	                return true;
