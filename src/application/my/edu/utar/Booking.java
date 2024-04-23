@@ -9,6 +9,8 @@ public class Booking {
 	private User user=new User();
 	private int userID;
 	private Room room=new Room();
+	private String room_type;
+	private String memberLevel;
 	private Printer printer=new Printer();
 	private WaitingList waitList=new WaitingList();
 	private ArrayList<Integer>roomIDs=new ArrayList<>();
@@ -65,19 +67,19 @@ public class Booking {
 	
 	public void reviewBookingInfo() {
 		String name=user.getUsername(userID);
-		String member_type=user.getMemberLevel(userID);
-		String room_type=room.getRoomType(member_type);
-		printer.printInfo(name,member_type,room_type);
-		user.displayMenu();
+		String memberLevel=user.getMemberLevel(userID);
+		room_type=room.getRoomType(memberLevel);
+		printer.printInfo(name,memberLevel,room_type);
+		bookingMenu();
 	}
 	
 	public void setBooking() {
 		int numRoom=0;
-	    String memberLevel=user.getMemberLevel(userID);
-	    String roomType = room.getRoomType(memberLevel);
-	    boolean available=room.checkRoom(roomType);
+	    memberLevel=user.getMemberLevel(userID);
+	    room_type = room.getRoomType(memberLevel);
+	    boolean available=room.checkRoom(room_type);
 	    if (available) {
-	        room.displayAvailableRooms(roomType);
+	        room.displayAvailableRooms(room_type);
 	        int maxRooms;
 	        if (memberLevel.equals("VIP")) {
 	            System.out.println("Dear customer, you are able to book up to 3 rooms at a time.");

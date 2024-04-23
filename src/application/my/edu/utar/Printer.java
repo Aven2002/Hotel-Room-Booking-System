@@ -12,10 +12,4 @@ public class Printer {
         System.out.println("==============================================");
 
 	}
-	
-	
-//	public static void main(String[]args) {
-//		Printer print=new Printer();
-//		print.printInfo("Aven","VIP","VIP");
-//	}
 }
