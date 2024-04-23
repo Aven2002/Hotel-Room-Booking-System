@@ -7,12 +7,10 @@ public class Booking {
 	private Connection connection;
 	private int bookingID;
 	private User user=new User();
+	private Room room=new Room();
+	private WaitingList waitList=new WaitingList();
+	private ArrayList<Integer>roomIDs=new ArrayList<>();
 	
-	public Booking(int userID,int roomID) {
-		user.initializeConnection();
-//		this.userID=userID;
-//		this.roomID=roomID;
-	}
 	public Booking(){
 		this.connection = user.initializeConnection();
 	}
@@ -34,11 +32,11 @@ public class Booking {
 		
 		switch(choice) 
 		{
-//			case 1: createBooking(userId,roomID);
-//					break;
+//			case 1: 
+//				break;
 			case 2: searchBooking(8);
 					break;
-			case 3: cancelBooking();
+			case 3: setBooking(1);
 					break;
 			case 4: cancelBooking();
 					break;
@@ -64,6 +62,102 @@ public class Booking {
 		}
 	}
 	
+	public void setBooking(int userID) {
+		int numRoom=0;
+	    String memberLevel=user.getMemberLevel(userID);
+	    String roomType = room.getRoomType(memberLevel);
+	    boolean available=room.checkRoom(roomType);
+	    if (available) {
+	        room.displayAvailableRooms(roomType);
+	        int maxRooms;
+	        if (memberLevel.equals("VIP")) {
+	            System.out.println("Dear customer, you are able to book up to 3 rooms at a time.");
+	            maxRooms = 3;
+	        } else if (memberLevel.equals("Member")) {
+	            System.out.println("Dear customer, you are able to book up to 2 rooms at a time.");
+	            maxRooms = 2;
+	        } else {
+	            maxRooms = 1; 
+	        }
+	        System.out.println("How many rooms do you want to book: ");
+	         numRoom = scanner.nextInt();
+	        scanner.nextLine();
+	        while (numRoom > maxRooms) {
+	            System.out.println("You can only book up to " + maxRooms + " rooms at a time.");
+	            System.out.println("Please enter a valid number of rooms: ");
+	            numRoom = scanner.nextInt();
+	            scanner.nextLine();
+	        }
+	        for (int i = 0; i < numRoom; i++) {
+	            System.out.println("Enter the corresponding Room ID: ");
+	            int roomID = scanner.nextInt();
+	            scanner.nextLine();
+	            roomIDs.add(roomID);
+	        }
+	        createBooking(roomIDs, userID, numRoom);
+	    	System.out.println("\n============================================================");
+	        System.out.println("  Confirmation Message: Room allocated successfully");
+	        System.out.println("============================================================");	        
+	    } else {
+	    	waitList.addWaiting(userID);
+	        System.out.println("\n===================================================================");
+	        System.out.println("  Confirmation Message: You have been added to the waiting list");
+	        System.out.println("===================================================================");
+	        
+	    }
+	}
+	
+	public void createBooking(ArrayList<Integer> roomIDs, int userID, int numRoom) {
+	    try {
+	        user.initializeConnection();
+	        
+	        // Insert into booking table
+	        String bookingQuery = "INSERT INTO booking (userID, roomQuantity) VALUES (?, ?)";
+	        PreparedStatement bookingStatement = connection.prepareStatement(bookingQuery, Statement.RETURN_GENERATED_KEYS);
+	        bookingStatement.setInt(1, userID);
+	        bookingStatement.setInt(2, numRoom);
+	        int rowsInserted = bookingStatement.executeUpdate();
+	        
+	        if (rowsInserted > 0) {
+	            // Get the generated booking ID
+	            ResultSet generatedKeys = bookingStatement.getGeneratedKeys();
+	            if (generatedKeys.next()) {
+	                int bookingID = generatedKeys.getInt(1);
+	                
+	                // Insert into bookingRoom table
+	                String bookingRoomQuery = "INSERT INTO bookingRoom (bookingID, roomID) VALUES (?, ?)";
+	                PreparedStatement bookingRoomStatement = connection.prepareStatement(bookingRoomQuery);
+	                
+	                // Insert each room into bookingRoom table
+	             // Insert each room into bookingRoom table
+	                for (int roomID : roomIDs) {
+	                    bookingRoomStatement.setInt(1, bookingID);
+	                    bookingRoomStatement.setInt(2, roomID);
+	                    bookingRoomStatement.addBatch(); 
+	                }
+
+	                // Execute batch insert
+	                int[] batchResults = bookingRoomStatement.executeBatch();
+	                int successfulInserts = Arrays.stream(batchResults).sum();
+	                
+	                if (successfulInserts == roomIDs.size()) {
+	                    System.out.println("\n======================================================");
+	                    System.out.println("    Confirmation Message: Booking created successfully");
+	                    System.out.println("======================================================");
+	                    room.updateRoomStatus(roomIDs);
+	                } else {
+	                    System.out.println("\n======================================================");
+	                    System.out.println("  Error Message: Failed to create booking");
+	                    System.out.println("======================================================");
+	                }
+	            }
+	        }
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    }
+	}
+
+
 	public void cancelBooking() {
 		user.initializeConnection();
 		System.out.print("Enter the correspond booking ID to process booking cancelation :");
@@ -116,7 +210,7 @@ public class Booking {
 		                int rowsAffected = removeStatement.executeUpdate();
 		                if (rowsAffected > 0) {
 		                    System.out.println("  Confirmation Message: You have been removed from the waiting list");
-		                    System.out.println("===============================================================");
+		                    System.out.println("===================================================================");
 		                }
 		            }
 		        }

@@ -277,4 +277,20 @@ public int getUserID() {
 public void setUserID(int userID) {
 	this.userID=userID;
 }
+
+public String getMemberLevel(int userID) {
+	String memberLevel=null;
+	String query = "SELECT memberLevel FROM user_account WHERE userID=?";
+    try (PreparedStatement statement = connection.prepareStatement(query)) {
+        statement.setInt(1, userID);
+        ResultSet resultSet = statement.executeQuery();
+
+        if (resultSet.next()) {
+        	 memberLevel = resultSet.getString("memberLevel");
+        }
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+    return memberLevel;
+}
 }

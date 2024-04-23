@@ -8,7 +8,8 @@ public class WaitingList {
 	ArrayList<String> member = new ArrayList<String>();
 	ArrayList<String> normal = new ArrayList<String>();
 	private Connection connection;
-	User user=new User();
+	private User user=new User();
+	private Room room=new Room();
 	
 	public WaitingList(Connection connection) {
 		this.connection=connection;
@@ -50,7 +51,7 @@ public class WaitingList {
 	        String username = resultSet.getString("username");
 	        Timestamp timestamp = resultSet.getTimestamp("created_at");
 	        String memberLevel=resultSet.getString("memberLevel");
-	        String roomType=getRoomType(memberLevel);
+	        String roomType=room.getRoomType(memberLevel);
 
 	        System.out.println("\n==============================================");
 	        System.out.println("                Waiting Status                 ");
@@ -92,18 +93,6 @@ public class WaitingList {
 	    }
 	}
 
-	
-	public String getRoomType(String memberLevel) {
-		String roomType;
-		if(memberLevel.equalsIgnoreCase("VIP")) {
-			roomType="VIP";
-		}else if(memberLevel.equalsIgnoreCase("Member")) {
-			roomType="Deluxe";
-		}else {
-			roomType="Standard";
-		}
-		return roomType;
-	}
 
 //	public static void main(String[]args) {
 //		dbConnector db=new dbConnector();
