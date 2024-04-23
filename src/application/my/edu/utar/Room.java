@@ -10,6 +10,7 @@ public class Room {
 	public Room() {
 		this.connection=user.initializeConnection();
 	}
+	
 	 public boolean checkRoom(String room_type) {
 		 int result=0;
 	        try {

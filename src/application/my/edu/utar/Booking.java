@@ -6,8 +6,8 @@ public class Booking {
 	private final Scanner scanner=new Scanner(System.in);
 	private Connection connection;
 	private int bookingID;
-	private int userID;
 	private User user=new User();
+	private int userID;
 	private Room room=new Room();
 	private Printer printer=new Printer();
 	private WaitingList waitList=new WaitingList();
@@ -17,7 +17,7 @@ public class Booking {
 		this.userID=userID;
 		this.connection = user.initializeConnection();
 	}
-	
+
 	public void bookingMenu() {
 		System.out.println("\n========================================");
 		System.out.println("          Booking Menu Options          ");
@@ -36,7 +36,8 @@ public class Booking {
 		{
 			case 1: reviewBookingInfo();
 				break;
-			case 2: setBooking(userID);
+			case 2: 
+				setBooking();
 					break;
 			case 3: cancelBooking();
 					break;
@@ -64,15 +65,13 @@ public class Booking {
 	
 	public void reviewBookingInfo() {
 		String name=user.getUsername(userID);
-		if(name==null) {
-			name="Guest";
-		}
 		String member_type=user.getMemberLevel(userID);
 		String room_type=room.getRoomType(member_type);
 		printer.printInfo(name,member_type,room_type);
+		user.displayMenu();
 	}
 	
-	public void setBooking(int userID) {
+	public void setBooking() {
 		int numRoom=0;
 	    String memberLevel=user.getMemberLevel(userID);
 	    String roomType = room.getRoomType(memberLevel);
@@ -115,9 +114,30 @@ public class Booking {
 			}
 	    } else {
 	    	waitList.addWaiting(userID);
-	        System.out.println("\n===================================================================");
-	        System.out.println("  Confirmation Message: You have been added to the waiting list");
-	        System.out.println("===================================================================");
+	    	 try {
+	             user.initializeConnection();
+	             
+	             // Insert into booking table with status 'In queue'
+	             String bookingQuery = "INSERT INTO booking (userID, roomQuantity, status) VALUES (?, ?, ?)";
+	             PreparedStatement bookingStatement = connection.prepareStatement(bookingQuery);
+	             bookingStatement.setInt(1, userID);
+	             bookingStatement.setInt(2, 0); // No rooms booked
+	             bookingStatement.setString(3, "In queue");
+	             int rowsInserted = bookingStatement.executeUpdate();
+	             
+	             if (rowsInserted > 0) {
+	                 System.out.println("\n======================================================================");
+	                 System.out.println("  Confirmation Message: You have been added to the waiting list");
+	                 System.out.println("======================================================================");
+	             } else {
+	                 System.out.println("\n======================================================================");
+	                 System.out.println("  Error Message: Failed to add to waiting list");
+	                 System.out.println("======================================================================");
+	             }
+	         } catch (SQLException e) {
+	             e.printStackTrace();
+	         }
+	    	 user.displayMenu();
 	    }
 	}
 	
@@ -126,10 +146,11 @@ public class Booking {
 	        user.initializeConnection();
 	        
 	        // Insert into booking table
-	        String bookingQuery = "INSERT INTO booking (userID, roomQuantity) VALUES (?, ?)";
+	        String bookingQuery = "INSERT INTO booking (userID, roomQuantity, status) VALUES (?, ?, ?)";
 	        PreparedStatement bookingStatement = connection.prepareStatement(bookingQuery, Statement.RETURN_GENERATED_KEYS);
 	        bookingStatement.setInt(1, userID);
 	        bookingStatement.setInt(2, numRoom);
+	        bookingStatement.setString(3, "Checked In");
 	        int rowsInserted = bookingStatement.executeUpdate();
 	        
 	        if (rowsInserted > 0) {
@@ -169,6 +190,7 @@ public class Booking {
 	    } catch (SQLException e) {
 	        e.printStackTrace();
 	    }
+	    user.displayMenu();
 	}
 
 

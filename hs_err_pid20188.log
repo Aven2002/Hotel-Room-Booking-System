@@ -1,0 +1,221 @@
+#
+# There is insufficient memory for the Java Runtime Environment to continue.
+# Native memory allocation (mmap) failed to map 402653184 bytes for G1 virtual space
+# Possible reasons:
+#   The system is out of physical RAM or swap space
+#   The process is running with CompressedOops enabled, and the Java Heap may be blocking the growth of the native heap
+# Possible solutions:
+#   Reduce memory load on the system
+#   Increase physical memory or swap space
+#   Check if swap backing store is full
+#   Decrease Java heap size (-Xmx/-Xms)
+#   Decrease number of Java threads
+#   Decrease Java thread stack sizes (-Xss)
+#   Set larger code cache with -XX:ReservedCodeCacheSize=
+#   JVM is running with Zero Based Compressed Oops mode in which the Java heap is
+#     placed in the first 32GB address space. The Java Heap base address is the
+#     maximum limit for the native heap growth. Please use -XX:HeapBaseMinAddress
+#     to set the Java Heap base and to place the Java Heap above 32GB virtual address.
+# This output file may be truncated or incomplete.
+#
+#  Out of Memory Error (os_windows.cpp:3530), pid=20188, tid=20092
+#
+# JRE version:  (18.0.1.1+2) (build )
+# Java VM: Java HotSpot(TM) 64-Bit Server VM (18.0.1.1+2-6, mixed mode, sharing, tiered, compressed oops, compressed class ptrs, g1 gc, windows-amd64)
+# No core dump will be written. Minidumps are not enabled by default on client versions of Windows
+#
+
+---------------  S U M M A R Y ------------
+
+Command Line: -Dfile.encoding=UTF-8 -Dstdout.encoding=UTF-8 -Dstderr.encoding=UTF-8 -XX:+ShowCodeDetailsInExceptionMessages my.edu.utar.User
+
+Host: Intel(R) Core(TM) i5-8250U CPU @ 1.60GHz, 8 cores, 23G,  Windows 10 , 64 bit Build 19041 (10.0.19041.3636)
+Time: Tue Apr 23 17:43:13 2024 Malay Peninsula Standard Time elapsed time: 0.014524 seconds (0d 0h 0m 0s)
+
+---------------  T H R E A D  ---------------
+
+Current thread (0x0000021036824d00):  JavaThread "Unknown thread" [_thread_in_vm, id=20092, stack(0x000000cf06a00000,0x000000cf06b00000)]
+
+Stack: [0x000000cf06a00000,0x000000cf06b00000]
+Native frames: (J=compiled Java code, j=interpreted, Vv=VM code, C=native code)
+V  [jvm.dll+0x69887a]
+V  [jvm.dll+0x7f38bd]
+V  [jvm.dll+0x7f51ce]
+V  [jvm.dll+0x7f5883]
+V  [jvm.dll+0x25ca3f]
+V  [jvm.dll+0x6957c9]
+V  [jvm.dll+0x68a2fa]
+V  [jvm.dll+0x321efb]
+V  [jvm.dll+0x3298d6]
+V  [jvm.dll+0x37e47e]
+V  [jvm.dll+0x37e6af]
+V  [jvm.dll+0x2f9c7a]
+V  [jvm.dll+0x2facdd]
+V  [jvm.dll+0x7c24f0]
+V  [jvm.dll+0x38b801]
+V  [jvm.dll+0x7a1203]
+V  [jvm.dll+0x40d6bf]
+V  [jvm.dll+0x40f091]
+C  [jli.dll+0x526b]
+C  [ucrtbase.dll+0x21bb2]
+C  [KERNEL32.DLL+0x17344]
+C  [ntdll.dll+0x526b1]
+
+
+---------------  P R O C E S S  ---------------
+
+Threads class SMR info:
+_java_thread_list=0x00007ffe1649d550, length=0, elements={
+}
+
+Java Threads: ( => current thread )
+
+Other Threads:
+  0x00000210368b4530 WorkerThread "GC Thread#0" [stack: 0x000000cf06b00000,0x000000cf06c00000] [id=16628]
+  0x00000210368dea60 ConcurrentGCThread "G1 Main Marker" [stack: 0x000000cf06c00000,0x000000cf06d00000] [id=2720]
+  0x00000210368e0370 WorkerThread "G1 Conc#0" [stack: 0x000000cf06d00000,0x000000cf06e00000] [id=15020]
+
+[error occurred during error reporting (printing all threads), id 0xc0000005, EXCEPTION_ACCESS_VIOLATION (0xc0000005) at pc=0x00007ffe15cca217]
+
+VM state: not at safepoint (not fully initialized)
+
+VM Mutex/Monitor currently owned by a thread:  ([mutex/lock_event])
+[0x00000210368203e0] Heap_lock - owner thread: 0x0000021036824d00
+
+Heap address: 0x0000000681c00000, size: 6116 MB, Compressed Oops mode: Zero based, Oop shift amount: 3
+
+CDS archive(s) mapped at: [0x0000000000000000-0x0000000000000000-0x0000000000000000), size 0, SharedBaseAddress: 0x0000000800000000, ArchiveRelocationMode: 0.
+Narrow klass base: 0x0000000000000000, Narrow klass shift: 0, Narrow klass range: 0x0
+
+GC Precious Log:
+ CardTable entry size: 512
+ Card Set container configuration: InlinePtr #cards 4 size 8 Array Of Cards #cards 32 size 80 Howl #buckets 8 coarsen threshold 7372 Howl Bitmap #cards 1024 size 144 coarsen threshold 921 Card regions per heap region 1 cards per card region 8192
+
+Heap:
+ garbage-first heap   total 0K, used 0K [0x0000000681c00000, 0x0000000800000000)
+  region size 4096K, 0 young (0K), 0 survivors (0K)
+
+[error occurred during error reporting (printing heap information), id 0xc0000005, EXCEPTION_ACCESS_VIOLATION (0xc0000005) at pc=0x00007ffe160b0cb9]
+
+GC Heap History (0 events):
+No events
+
+Deoptimization events (0 events):
+No events
+
+Classes loaded (0 events):
+No events
+
+Classes unloaded (0 events):
+No events
+
+Classes redefined (0 events):
+No events
+
+Internal exceptions (0 events):
+No events
+
+VM Operations (0 events):
+No events
+
+Events (1 events):
+Event: 0.009 Loaded shared library D:\Java\jdk-18.0.1.1\bin\java.dll
+
+
+Dynamic libraries:
+0x00007ff75cd90000 - 0x00007ff75cda0000 	D:\Java\jdk-18.0.1.1\bin\javaw.exe
+0x00007ffe91fb0000 - 0x00007ffe921a8000 	C:\Windows\SYSTEM32\ntdll.dll
+0x00007ffe91590000 - 0x00007ffe9164d000 	C:\Windows\System32\KERNEL32.DLL
+0x00007ffe8f820000 - 0x00007ffe8fb16000 	C:\Windows\System32\KERNELBASE.dll
+0x00007ffe8fe30000 - 0x00007ffe8ff30000 	C:\Windows\System32\ucrtbase.dll
+0x00007ffe79090000 - 0x00007ffe790a8000 	D:\Java\jdk-18.0.1.1\bin\jli.dll
+0x00007ffe7ec30000 - 0x00007ffe7ec4a000 	D:\Java\jdk-18.0.1.1\bin\VCRUNTIME140.dll
+0x00007ffe91810000 - 0x00007ffe918c0000 	C:\Windows\System32\ADVAPI32.dll
+0x00007ffe91730000 - 0x00007ffe917ce000 	C:\Windows\System32\msvcrt.dll
+0x00007ffe91340000 - 0x00007ffe913e0000 	C:\Windows\System32\sechost.dll
+0x00007ffe91990000 - 0x00007ffe91ab3000 	C:\Windows\System32\RPCRT4.dll
+0x00007ffe8f7f0000 - 0x00007ffe8f817000 	C:\Windows\System32\bcrypt.dll
+0x00007ffe90400000 - 0x00007ffe9059f000 	C:\Windows\System32\USER32.dll
+0x00007ffe8fe00000 - 0x00007ffe8fe22000 	C:\Windows\System32\win32u.dll
+0x00007ffe765e0000 - 0x00007ffe7687a000 	C:\Windows\WinSxS\amd64_microsoft.windows.common-controls_6595b64144ccf1df_6.0.19041.3636_none_60b6a03d71f818d5\COMCTL32.dll
+0x00007ffe918d0000 - 0x00007ffe918fb000 	C:\Windows\System32\GDI32.dll
+0x00007ffe8f6d0000 - 0x00007ffe8f7e7000 	C:\Windows\System32\gdi32full.dll
+0x00007ffe8fc00000 - 0x00007ffe8fc9d000 	C:\Windows\System32\msvcp_win.dll
+0x00007ffe878d0000 - 0x00007ffe878da000 	C:\Windows\SYSTEM32\VERSION.dll
+0x00007ffe917d0000 - 0x00007ffe91802000 	C:\Windows\System32\IMM32.DLL
+0x00007ffe8ab10000 - 0x00007ffe8ab1c000 	D:\Java\jdk-18.0.1.1\bin\vcruntime140_1.dll
+0x00007ffe26000000 - 0x00007ffe2608d000 	D:\Java\jdk-18.0.1.1\bin\msvcp140.dll
+0x00007ffe159c0000 - 0x00007ffe165d0000 	D:\Java\jdk-18.0.1.1\bin\server\jvm.dll
+0x00007ffe905c0000 - 0x00007ffe905c8000 	C:\Windows\System32\PSAPI.DLL
+0x00007ffe7f2d0000 - 0x00007ffe7f2f7000 	C:\Windows\SYSTEM32\WINMM.dll
+0x00007ffe6aa80000 - 0x00007ffe6aa89000 	C:\Windows\SYSTEM32\WSOCK32.dll
+0x00007ffe91c00000 - 0x00007ffe91c6b000 	C:\Windows\System32\WS2_32.dll
+0x00007ffe8de80000 - 0x00007ffe8de92000 	C:\Windows\SYSTEM32\kernel.appcore.dll
+0x00007ffe89c60000 - 0x00007ffe89c6a000 	D:\Java\jdk-18.0.1.1\bin\jimage.dll
+0x00007ffe8d3f0000 - 0x00007ffe8d5d4000 	C:\Windows\SYSTEM32\DBGHELP.DLL
+0x00007ffe752e0000 - 0x00007ffe75314000 	C:\Windows\SYSTEM32\dbgcore.DLL
+0x00007ffe8fb70000 - 0x00007ffe8fbf2000 	C:\Windows\System32\bcryptPrimitives.dll
+0x00007ffe89740000 - 0x00007ffe89765000 	D:\Java\jdk-18.0.1.1\bin\java.dll
+
+dbghelp: loaded successfully - version: 4.0.5 - missing functions: none
+symbol engine: initialized successfully - sym options: 0x614 - pdb path: .;D:\Java\jdk-18.0.1.1\bin;C:\Windows\SYSTEM32;C:\Windows\WinSxS\amd64_microsoft.windows.common-controls_6595b64144ccf1df_6.0.19041.3636_none_60b6a03d71f818d5;D:\Java\jdk-18.0.1.1\bin\server
+
+VM Arguments:
+jvm_args: -Dfile.encoding=UTF-8 -Dstdout.encoding=UTF-8 -Dstderr.encoding=UTF-8 -XX:+ShowCodeDetailsInExceptionMessages 
+java_command: my.edu.utar.User
+java_class_path (initial): C:\Users\WELCOME\OneDrive\Desktop\Software Testing\Assignment\Hotel-Room-Booking-System\TestClasses;C:\Users\WELCOME\OneDrive\Desktop\Software Testing\Assignment\Hotel-Room-Booking-System\bin;C:\Users\WELCOME\.p2\pool\plugins\org.junit_4.13.2.v20230809-1000.jar;C:\Users\WELCOME\.p2\pool\plugins\org.hamcrest_2.2.0.jar;C:\Users\WELCOME\.p2\pool\plugins\org.hamcrest.core_2.2.0.v20230809-1000.jar;C:\jar_files\byte-buddy-1.12.8.jar;C:\jar_files\byte-buddy-agent-1.12.8.jar;C:\jar_files\JUnitParams-1.0.2.jar;C:\jar_files\mockito-core-4.4.0.jar;C:\jar_files\objenesis-3.2.jar;C:\Program Files (x86)\MySQL\Connector J 8.0\mysql-connector-j-8.0.33.jar
+Launcher Type: SUN_STANDARD
+
+[Global flags]
+     intx CICompilerCount                          = 4                                         {product} {ergonomic}
+     uint ConcGCThreads                            = 2                                         {product} {ergonomic}
+     uint G1ConcRefinementThreads                  = 8                                         {product} {ergonomic}
+   size_t G1HeapRegionSize                         = 4194304                                   {product} {ergonomic}
+    uintx GCDrainStackTargetSize                   = 64                                        {product} {ergonomic}
+   size_t InitialHeapSize                          = 402653184                                 {product} {ergonomic}
+   size_t MarkStackSize                            = 4194304                                   {product} {ergonomic}
+   size_t MaxHeapSize                              = 6413090816                                {product} {ergonomic}
+   size_t MinHeapDeltaBytes                        = 4194304                                   {product} {ergonomic}
+   size_t MinHeapSize                              = 8388608                                   {product} {ergonomic}
+    uintx NonNMethodCodeHeapSize                   = 5839372                                {pd product} {ergonomic}
+    uintx NonProfiledCodeHeapSize                  = 122909434                              {pd product} {ergonomic}
+    uintx ProfiledCodeHeapSize                     = 122909434                              {pd product} {ergonomic}
+    uintx ReservedCodeCacheSize                    = 251658240                              {pd product} {ergonomic}
+     bool SegmentedCodeCache                       = true                                      {product} {ergonomic}
+     bool ShowCodeDetailsInExceptionMessages       = true                                   {manageable} {command line}
+   size_t SoftMaxHeapSize                          = 6413090816                             {manageable} {ergonomic}
+     bool UseCompressedClassPointers               = true                           {product lp64_product} {ergonomic}
+     bool UseCompressedOops                        = true                           {product lp64_product} {ergonomic}
+     bool UseG1GC                                  = true                                      {product} {ergonomic}
+     bool UseLargePagesIndividualAllocation        = false                                  {pd product} {ergonomic}
+
+Logging:
+Log output configuration:
+ #0: stdout all=warning uptime,level,tags foldmultilines=false
+ #1: stderr all=off uptime,level,tags foldmultilines=false
+
+Environment Variables:
+JAVA_HOME=D:\Java\jdk-18.0.1.1
+PATH=D:/Java/jdk-18.0.1.1/bin/server;D:/Java/jdk-18.0.1.1/bin;C:\Program Files\Common Files\Oracle\Java\javapath;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Windows\System32\OpenSSH\;C:\Program Files\Docker\Docker\resources\bin;D:\;C:\Program Files\Git\cmd;C:\Program Files\MySQL\MySQL Shell 8.0\bin\;D:\Node.js;D:\Android\Sdk\platform-tools;C:\Users\WELCOME\AppData\Local\GitHubDesktop\bin;C:\Users\WELCOME\AppData\Local\Programs\Microsoft VS Code\bin;C:\Users\WELCOME\AppData\Roaming\npm;C:\Users\WELCOME\OneDrive\Desktop;
+USERNAME=WELCOME
+OS=Windows_NT
+PROCESSOR_IDENTIFIER=Intel64 Family 6 Model 142 Stepping 10, GenuineIntel
+
+
+
+---------------  S Y S T E M  ---------------
+
+OS:
+ Windows 10 , 64 bit Build 19041 (10.0.19041.3636)
+OS uptime: 1 days 4:49 hours
+
+CPU: total 8 (initial active 8) (4 cores per cpu, 2 threads per core) family 6 model 142 stepping 10 microcode 0xe0, cx8, cmov, fxsr, ht, mmx, 3dnowpref, sse, sse2, sse3, ssse3, sse4.1, sse4.2, popcnt, lzcnt, tsc, tscinvbit, avx, avx2, aes, erms, clmul, bmi1, bmi2, adx, fma, vzeroupper, clflush, clflushopt
+
+Memory: 4k page, system-wide physical 24456M (12497M free)
+TotalPageFile size 38687M (AvailPageFile size 230M)
+current process WorkingSet (physical memory assigned to process): 10M, peak: 10M
+current process commit charge ("private bytes"): 60M, peak: 444M
+
+vm_info: Java HotSpot(TM) 64-Bit Server VM (18.0.1.1+2-6) for windows-amd64 JRE (18.0.1.1+2-6), built on Apr 25 2022 21:53:15 by "mach5one" with MS VC++ 16.8 / 16.9 (VS2019)
+
+END.

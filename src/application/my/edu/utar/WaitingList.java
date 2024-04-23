@@ -23,9 +23,10 @@ public class WaitingList {
 	        statement.setInt(1, userID);
 	        int rowsInserted = statement.executeUpdate();
 	        if (rowsInserted > 0) {
-	        	System.out.println("\n==============================================");
-	            System.out.println("   New waiting record added successfully.");
-	            System.out.println("==============================================");
+	        	System.out.println("\n===============================================================================");
+	            System.out.println("   Dear customer, ");
+	            System.out.println("   Since there isn't a room available right now, you will be add to waiting list");
+	            System.out.println("================================================================================");
 	        } else {
 	        	System.out.println("\n==============================================");
 	            System.out.println("   Failed to add new waiting record.");
@@ -61,7 +62,7 @@ public class WaitingList {
 	        System.out.println("==============================================");
 	    } else {
 	    	System.out.println("\n============================================================");
-	        System.out.println("  Dear customer, you are not quering in the waiting list.");
+	        System.out.println("  Dear customer, you are not querying in the waiting list.");
 	        System.out.println("=============================================================");
 	    }
 	    user.displayMenu();

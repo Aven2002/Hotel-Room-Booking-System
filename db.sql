@@ -36,7 +36,8 @@ CREATE TABLE IF NOT EXISTS room (
 CREATE TABLE IF NOT EXISTS booking (
     bookingID INT NOT NULL AUTO_INCREMENT,
     userID INT NOT NULL,
-     roomQuantity INT NOT NULL,
+	roomQuantity INT NOT NULL DEFAULT 0,
+	status VARCHAR(20) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (bookingID),
     FOREIGN KEY (userID) REFERENCES user_account(userID)
