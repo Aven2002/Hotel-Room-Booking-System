@@ -11,14 +11,12 @@ public class WaitingList {
 	private User user=new User();
 	private Room room=new Room();
 	
-	public WaitingList(Connection connection) {
-		this.connection=connection;
-	}
 	public WaitingList() {
-		
+		this.connection=user.initializeConnection();
 	}
 	
 	public void addWaiting(int userID) {
+		
 	    String query = "INSERT INTO waiting_list (userID) VALUES (?)";
 
 	    try (PreparedStatement statement = connection.prepareStatement(query)) {

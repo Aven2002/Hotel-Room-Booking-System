@@ -134,7 +134,7 @@ public void signUpPhase() {
 		        statement.setString(3, password);
 		        statement.setString(4, phoneNum);
 		        statement.setString(5, email);
-		        statement.setString(6, "member");
+		        statement.setString(6, "Member");
 
 		        int rowsInserted = statement.executeUpdate();
 
@@ -204,7 +204,7 @@ public void signUpPhase() {
             try {
                 System.out.print("Enter your choice: ");
                 int choice = scanner.nextInt();
-                //scanner.nextLine();
+                scanner.nextLine();
                 processChoice(choice);
             } catch (InputMismatchException e) {
                 System.out.println("");
@@ -220,15 +220,18 @@ public void signUpPhase() {
         public void processChoice(int choice) {
                 switch (choice) {
                     case 1:
-                       //Room room=new Room(connection);
-                       // room.checkRoom();
+                       Room room=new Room();
+                       String memberLevel=getMemberLevel(userID);
+                       String room_type=room.getRoomType(memberLevel);
+                       room.displayAvailableRooms(room_type);
+                       displayMenu();
                         break;
                     case 2:
-                       // Booking booking=new Booking();
-                       // booking.bookingMenu();
+                       Booking booking=new Booking(userID);
+                        booking.bookingMenu();
                         break;
                     case 3:
-                        WaitingList wait_list=new WaitingList(connection);
+                        WaitingList wait_list=new WaitingList();
                         wait_list.getWaiting(getUserID());
                         break;
                     case 4:
@@ -274,6 +277,21 @@ public boolean isValidUsername(String username) {
 public int getUserID() {
 	return userID;
 }
+public String getUsername(int userID) {
+    String username = null;
+    String query = "SELECT username FROM user_account WHERE userID = ?";
+    try (PreparedStatement statement = connection.prepareStatement(query)) {
+        statement.setInt(1, userID);
+        ResultSet resultSet = statement.executeQuery();
+        if (resultSet.next()) {
+            username = resultSet.getString("username");
+        }
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+    return username;
+}
+
 public void setUserID(int userID) {
 	this.userID=userID;
 }

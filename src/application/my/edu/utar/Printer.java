@@ -4,7 +4,7 @@ public class Printer {
 
 	public void printInfo(String name, String member_type, String room_type) {
 		System.out.println("\n==============================================");
-        System.out.println("                   Result                     ");
+        System.out.println("                   Booking Details              ");
         System.out.println("==============================================");
         System.out.println("        Name          : " + name);
         System.out.println("        Member Type   : " + member_type);
@@ -12,6 +12,7 @@ public class Printer {
         System.out.println("==============================================");
 
 	}
+	
 	
 //	public static void main(String[]args) {
 //		Printer print=new Printer();

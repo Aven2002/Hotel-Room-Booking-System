@@ -6,12 +6,15 @@ public class Booking {
 	private final Scanner scanner=new Scanner(System.in);
 	private Connection connection;
 	private int bookingID;
+	private int userID;
 	private User user=new User();
 	private Room room=new Room();
+	private Printer printer=new Printer();
 	private WaitingList waitList=new WaitingList();
 	private ArrayList<Integer>roomIDs=new ArrayList<>();
 	
-	public Booking(){
+	public Booking(int userID){
+		this.userID=userID;
 		this.connection = user.initializeConnection();
 	}
 	
@@ -19,7 +22,7 @@ public class Booking {
 		System.out.println("\n========================================");
 		System.out.println("          Booking Menu Options          ");
 		System.out.println("========================================");
-		System.out.println("  1. View Booking                       ");
+		System.out.println("  1. Review Booking Information         ");
 		System.out.println("  2. Search Booking                     ");
 		System.out.println("  3. Create Booking                     ");
 		System.out.println("  4. Cancel Booking                     ");
@@ -32,11 +35,11 @@ public class Booking {
 		
 		switch(choice) 
 		{
-//			case 1: 
-//				break;
-			case 2: searchBooking(8);
+			case 1: reviewBookingInfo();
+				break;
+			case 2: searchBooking(bookingID);
 					break;
-			case 3: setBooking(1);
+			case 3: setBooking(userID);
 					break;
 			case 4: cancelBooking();
 					break;
@@ -62,6 +65,14 @@ public class Booking {
 		}
 	}
 	
+	public void reviewBookingInfo() {
+		System.out.println(userID);
+		String name=user.getUsername(userID);
+		String member_type=user.getMemberLevel(userID);
+		String room_type=room.getRoomType(member_type);
+		printer.printInfo(name,member_type,room_type);
+	}
+	
 	public void setBooking(int userID) {
 		int numRoom=0;
 	    String memberLevel=user.getMemberLevel(userID);
@@ -79,6 +90,7 @@ public class Booking {
 	        } else {
 	            maxRooms = 1; 
 	        }
+	        try {
 	        System.out.println("How many rooms do you want to book: ");
 	         numRoom = scanner.nextInt();
 	        scanner.nextLine();
@@ -95,15 +107,18 @@ public class Booking {
 	            roomIDs.add(roomID);
 	        }
 	        createBooking(roomIDs, userID, numRoom);
-	    	System.out.println("\n============================================================");
-	        System.out.println("  Confirmation Message: Room allocated successfully");
-	        System.out.println("============================================================");	        
+	        }catch(InputMismatchException e) {
+				System.out.println("\n============================================");
+	            System.out.println("    Error Message: Invalid Input Format   ");
+	            System.out.println("==========================================");
+	            System.out.println("Please try again ...\n");
+	            bookingMenu();
+			}
 	    } else {
 	    	waitList.addWaiting(userID);
 	        System.out.println("\n===================================================================");
 	        System.out.println("  Confirmation Message: You have been added to the waiting list");
 	        System.out.println("===================================================================");
-	        
 	    }
 	}
 	
@@ -246,8 +261,4 @@ public class Booking {
 	    return false;
 	}
 	
-	public static void main(String[]args) {
-		Booking book=new Booking();
-		book.bookingMenu();
-	}
 }

@@ -85,11 +85,7 @@ public class Room {
 	        int[] batchResults = statement.executeBatch();
 	        int successfulUpdates = Arrays.stream(batchResults).sum();
 	        
-	        if (successfulUpdates == roomIDs.size()) {
-	            System.out.println("\n===============================================");
-	            System.out.println("    Confirmation Message: Room status updated");
-	            System.out.println("===============================================");
-	        } else {
+	        if (successfulUpdates != roomIDs.size()) {
 	            System.out.println("\n===============================================");
 	            System.out.println("  Error Message: Failed to update room status");
 	            System.out.println("===============================================");

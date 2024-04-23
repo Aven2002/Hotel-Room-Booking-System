@@ -19,10 +19,10 @@ CREATE TABLE IF NOT EXISTS user_account (
 /*Wating List Table*/
 CREATE TABLE IF NOT EXISTS waiting_list (
     waitListID INT NOT NULL AUTO_INCREMENT,
-    bookingID INT NOT NULL,
+    userID INT NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (waitListID),
-     FOREIGN KEY (bookingID) REFERENCES booking(bookingID)
+     FOREIGN KEY (userID) REFERENCES booking(userID)
 );
 /* Room Table */
 CREATE TABLE IF NOT EXISTS room (
