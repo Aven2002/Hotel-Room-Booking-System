@@ -198,7 +198,7 @@ public void signUpPhase() {
                 System.out.println("|  1. Check Avaiable Room     |");
                 System.out.println("|  2. Manage Booking          |");
                 System.out.println("|  3. Trace Waiting Status    |");
-                System.out.println("|  4. Quit                    |");
+                System.out.println("|  4. Back                    |");
                 System.out.println("@=============================@");
 
             try {
@@ -297,7 +297,7 @@ public void setUserID(int userID) {
 }
 
 public String getMemberLevel(int userID) {
-	String memberLevel=null;
+	String memberLevel="non- member";
 	String query = "SELECT memberLevel FROM user_account WHERE userID=?";
     try (PreparedStatement statement = connection.prepareStatement(query)) {
         statement.setInt(1, userID);

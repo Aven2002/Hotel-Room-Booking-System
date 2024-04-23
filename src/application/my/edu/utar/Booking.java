@@ -212,16 +212,16 @@ public class Booking {
              }
 			}
 		//Remove from waiting_list table
-		 String checkWaitingQuery = "SELECT * FROM waiting_list WHERE bookingID = ?";
+		 String checkWaitingQuery = "SELECT * FROM waiting_list WHERE userID = ?";
 		    try (PreparedStatement checkStatement = connection.prepareStatement(checkWaitingQuery)) {
-		        checkStatement.setInt(1, bookingID);
+		        checkStatement.setInt(1, userID);
 		        ResultSet checkResultSet = checkStatement.executeQuery();
 		        
 		        // If the booking ID is in the waiting list, remove it
 		        if (checkResultSet.next()) {
-		            String removeWaitingQuery = "DELETE FROM waiting_list WHERE bookingID = ?";
+		            String removeWaitingQuery = "DELETE FROM waiting_list WHERE userID = ?";
 		            try (PreparedStatement removeStatement = connection.prepareStatement(removeWaitingQuery)) {
-		                removeStatement.setInt(1, bookingID);
+		                removeStatement.setInt(1, userID);
 		                int rowsAffected = removeStatement.executeUpdate();
 		                if (rowsAffected > 0) {
 		                    System.out.println("  Confirmation Message: You have been removed from the waiting list");
@@ -232,8 +232,28 @@ public class Booking {
 		    } catch (SQLException e) {
 		        e.printStackTrace();
 		    }
-		bookingMenu();
+		    
+		 // Update room status to available based on booking ID
+	        String getRoomIDsQuery = "SELECT roomID FROM bookingRoom WHERE bookingID = ?";
+	        try (PreparedStatement getRoomIDsStatement = connection.prepareStatement(getRoomIDsQuery)) {
+	            getRoomIDsStatement.setInt(1, bookingID);
+	            ResultSet roomIDsResultSet = getRoomIDsStatement.executeQuery();
+
+	            // Iterate over room IDs and update their status
+	            while (roomIDsResultSet.next()) {
+	                int roomID = roomIDsResultSet.getInt("roomID");
+	                String updateRoomStatusQuery = "UPDATE room SET roomStatus = 'Available' WHERE roomID = ?";
+	                try (PreparedStatement updateStatement = connection.prepareStatement(updateRoomStatusQuery)) {
+	                    updateStatement.setInt(1, roomID);
+	                    updateStatement.executeUpdate();
+	                }
+	            }
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    }
+	    bookingMenu();
 	}
+
 	
 	public boolean searchBooking(int bookingID) {
 	    String searchQuery = "SELECT * FROM booking WHERE bookingID = ?";
