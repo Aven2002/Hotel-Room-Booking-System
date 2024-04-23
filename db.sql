@@ -19,9 +19,11 @@ CREATE TABLE IF NOT EXISTS user_account (
 /*Wating List Table*/
 CREATE TABLE IF NOT EXISTS waiting_list (
     waitListID INT NOT NULL AUTO_INCREMENT,
+    bookingID INT NOT NULL,
     userID INT NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (waitListID),
+     FOREIGN KEY (bookingID) REFERENCES booking(bookingID),
     FOREIGN KEY (userID) REFERENCES user_account(userID)
 );
 /* Room Table */
@@ -53,6 +55,13 @@ CREATE TABLE IF NOT EXISTS bookingRoom (
     FOREIGN KEY (bookingID) REFERENCES booking(bookingID),
     FOREIGN KEY (roomID) REFERENCES room(roomID)
 );
+
+/*Pre- defined User accounts*/
+INSERT INTO user_account(fullName, email, contactNum, username, password, memberLevel, exclusiveReward) VALUES
+('VIP_user_1','vip001@outlook.com',0102220001,'vip1','@vip1','VIP',true),
+('VIP_user_2','vip002@outlook.com',0102220002,'vip2','@vip2','VIP',false),
+('Member_user_1','member001@outlook.com',0102220003,'member1','@member1','Member',true),
+('Member_user_2','member002@outlook.com',0102220004,'member2','@member2','Member',false);
 
 /*Pre- defined Room*/
 INSERT INTO room (roomType, roomPrice, roomStatus) VALUES
