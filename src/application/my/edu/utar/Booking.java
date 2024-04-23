@@ -36,7 +36,7 @@ public class Booking {
 		{
 //			case 1: createBooking(userId,roomID);
 //					break;
-			case 2: searchBooking(bookingID);
+			case 2: searchBooking(1);
 					break;
 			case 3: cancelBooking();
 					break;
@@ -92,14 +92,18 @@ public class Booking {
 		                    statement.setInt(1, bookingID);
 		                    int rowsAffected = statement.executeUpdate();
 		                    if (rowsAffected > 0) {
-		                        System.out.println("\n=====================================================================");
+		                        System.out.println("\n===================================================================");
 		                        System.out.println("  Confirmation Message: Booking with ID " + bookingID + " successfully cancelled.");
-		                        System.out.println("=====================================================================");
+		                        System.out.println("===================================================================");
 		                    }
 		                } catch (SQLException e) {
 		                    e.printStackTrace();
 		                }
-		        	}
+		        	}else {
+                   	 System.out.println("\n===============================================================");
+                     System.out.println("  Error Message: Booking with ID " + bookingID + " is not being cancelled.");
+                     System.out.println("===============================================================");
+             }
 			} 
 		bookingMenu();
 	}
