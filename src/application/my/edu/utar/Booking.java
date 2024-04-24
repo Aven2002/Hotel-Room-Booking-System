@@ -106,7 +106,7 @@ public class Booking {
 	
 
 
-	public void createBooking(ArrayList<Integer> allocatedRoomIDs, int userID) {
+	public void createBooking(ArrayList<Integer> allocatedRoomIDs, int userID) throws SQLException{
 	    try {
 	        user.initializeConnection();
 	        
@@ -142,7 +142,7 @@ public class Booking {
 	                
 	                if (successfulInserts == numRoom) {
 	                    System.out.println("\n===========================================================");
-	                    System.out.println("    Confirmation Message: Booking created successfully");
+	                    System.out.println("Confirmation Message: Booking created successfully");
 	                    System.out.println("===========================================================");
 	                    for (int roomID : allocatedRoomIDs) {
 	                        String roomType = room.getRoomTypeDependID(roomID);
@@ -154,11 +154,15 @@ public class Booking {
 	                    System.out.println("  Error Message: Failed to create booking");
 	                    System.out.println("======================================================");
 	                }
+	                
 	            }
 	        }
+	        
 	    } catch (SQLException e) {
 	        e.printStackTrace();
+	        
 	    }
+	    bookingMenu();
 	}
 
 
@@ -376,6 +380,10 @@ public class Booking {
 	public void setBookingID(int bookingID) {
 		this.bookingID=bookingID;
 	}
+	
+	public int getBookingID() {
+		return bookingID;
+	}
 
 	public int getNumOfRoomToBook(String memberLevel) {
 	    int maxRooms;
@@ -441,5 +449,8 @@ public class Booking {
 	    }
 	}
 	
+	public void setConnection(Connection connection) {
+		this.connection=connection;
+	}
 
 }

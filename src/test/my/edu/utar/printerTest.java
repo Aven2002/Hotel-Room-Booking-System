@@ -1,26 +1,58 @@
 package my.edu.utar;
 
-import static org.junit.Assert.assertEquals;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
+
+import junitparams.JUnitParamsRunner;
+import junitparams.Parameters;
+
 import static org.mockito.Mockito.*;
 
-import org.junit.Test;
-
+@RunWith(JUnitParamsRunner.class)
 public class printerTest {
 
-    @Test
-    public void testPrintInfo() {
-        // Given
-        Printer printer = new Printer();
-        String name = "John Doe";
-        String memberType = "Gold";
-        String roomType = "Suite";
+	private Object[] validData() {
+		return new Object[] {
+				new Object[] {"John Doe", "member", "Standard"},
+				new Object[] {"Lee Wai Kin", "VIP", "VIP"},
+				new Object[] {"Kishor Rames", "member", "Deluxe"},
+				new Object[] {"Mao ZeBron", "VIP", "Deluxe"}
+		};
+	}
+	
+	
+	@Test
+	@Parameters(method = "validData")
+	public void testPrintInfo(String name, String memberType, String roomType) {
+        
+        Printer mock = mock(Printer.class);
+        
+        // Call the method under test on the Mock object
+        mock.printInfo(name, memberType, roomType);
+        
+        // Verify that the printInfo method was called 
+        // on the mock with the correct arguments
+        verify(mock).printInfo(name, memberType, roomType);
+	}
+	
+	
+	@Test
+	public void testPrintInfoInvalid() {
+        String name = null;
+        String memberType = "member";
+        String roomType = "Standard";
+        
+        Printer mock = mock(Printer.class);
+        
+        // Call the method under test on the Mock object
+        mock.printInfo(name, memberType, roomType);
+        
+        // Verify that the printInfo method was NOT called 
+        // on the mock with the correct arguments
+        verify(mock, never()).printInfo(anyString(), anyString(), anyString());
+	}
+	
 
-        // When
-        printer.printInfo(name, memberType, roomType);
-
-        // Then
-        assertEquals(name, name);
-        assertEquals(memberType, memberType);
-        assertEquals(roomType, roomType);
-    }
 }

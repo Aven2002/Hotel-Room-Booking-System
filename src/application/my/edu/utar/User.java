@@ -4,7 +4,7 @@ import java.util.*;
 import java.sql.*;
 
 public class User{
-	private final Scanner scanner =new Scanner(System.in);
+	private Scanner scanner =new Scanner(System.in);
 	private Connection connection;
 	private int userID;
     private String username;
@@ -15,13 +15,18 @@ public class User{
     
     public static void main(String[]args) throws SQLException {
     	User user=new User();
-    	//user.welcomePage();
-    	user.markExclusiveRewardAsRedeemed(3);
+    	user.welcomePage();
+    	
     }
     public User() {
     	initializeConnection();
     }
-    public void welcomePage() throws SQLException {
+    
+    public User(Connection connection) {
+		this.connection=connection;
+	}
+ 
+	public void welcomePage() throws SQLException {
         System.out.println("\n@===================================@");
         System.out.println("| Welcome to Hotel Booking System   |");
         System.out.println("|===================================|");
@@ -196,7 +201,7 @@ public void signUpPhase() throws SQLException {
                 System.out.println("\n@=============================@");
                 System.out.println("|         Main Menu           |");
                 System.out.println("|=============================|");
-                System.out.println("|  1. Check Avaiable Room     |");
+                System.out.println("|  1. Check Available Room     |");
                 System.out.println("|  2. Manage Booking          |");
                 System.out.println("|  3. Trace Waiting Status    |");
                 System.out.println("|  4. Back                    |");
@@ -233,7 +238,7 @@ public void signUpPhase() throws SQLException {
                         break;
                     case 3:
                         WaitingList wait_list=new WaitingList();
-                        wait_list.getWaiting(getUserID());
+                        wait_list.getWaiting(userID);
                         break;
                     case 4:
                         welcomePage();

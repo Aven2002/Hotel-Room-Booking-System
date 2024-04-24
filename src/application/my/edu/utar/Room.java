@@ -9,8 +9,12 @@ public class Room {
 	private User user=new User();
 	private String roomType;
 	
+	
 	public Room() {
 		this.connection=user.initializeConnection();
+	}
+	public Room(Connection connection) {
+		this.connection=connection;
 	}
 	
 	 public boolean checkRoom(int numRoomToBook,String room_type) {
@@ -52,7 +56,7 @@ public class Room {
 	            while (resultSet.next()) {
 	                int roomID = resultSet.getInt("roomID");
 	                double roomPrice = resultSet.getDouble("roomPrice");
-	                System.out.printf("%12d %15.2f%n", roomID, roomPrice); // Adjusted formatting
+	                System.out.printf("%12d %15.2f%n", roomID, roomPrice); 
 	            }
 	            System.out.println("===========================================");
 	        } catch (SQLException e) {
@@ -90,6 +94,10 @@ public class Room {
 
 	public void setRoomType(String roomType) {
 		this.roomType=roomType;
+	}
+	
+	public String getRoomType() {
+		return roomType;
 	}
 	
 	public void updateRoomStatus_booked(ArrayList<Integer> roomIDs) {
@@ -159,23 +167,4 @@ public class Room {
 	    }
 	}
 	
-//	public void updateRoomStatus_booked(int bookingID) {
-//        String getRoomIDsQuery = "SELECT roomID FROM bookingRoom WHERE bookingID = ?";
-//        try (PreparedStatement getRoomIDsStatement = connection.prepareStatement(getRoomIDsQuery)) {
-//            getRoomIDsStatement.setInt(1, bookingID);
-//            ResultSet roomIDsResultSet = getRoomIDsStatement.executeQuery();
-//
-//            // Iterate over room IDs and update their status
-//            while (roomIDsResultSet.next()) {
-//                int roomID = roomIDsResultSet.getInt("roomID");
-//                String updateRoomStatusQuery = "UPDATE room SET roomStatus = 'Booked' WHERE roomID = ?";
-//                try (PreparedStatement updateStatement = connection.prepareStatement(updateRoomStatusQuery)) {
-//                    updateStatement.setInt(1, roomID);
-//                    updateStatement.executeUpdate();
-//                }
-//            }
-//	    } catch (SQLException e) {
-//	        e.printStackTrace();
-//	    }
-//	}
 }
