@@ -73,7 +73,7 @@ public class Room {
 	public void updateRoomStatus(ArrayList<Integer> roomIDs) {
 	    try {
 	        connection = dbConnector.getConnection();
-	        String updateQuery = "UPDATE room SET roomStatus = 'booked' WHERE roomID = ?";
+	        String updateQuery = "UPDATE room SET roomStatus = 'Booked' WHERE roomID = ?";
 	        PreparedStatement statement = connection.prepareStatement(updateQuery);
 	        
 	        // Update each room's status to booked
@@ -94,12 +94,5 @@ public class Room {
 	    } catch (SQLException e) {
 	        e.printStackTrace();
 	    }
-	}
-
-	
-	public static void main(String[]args) {
-		Room room =new Room();
-		boolean result=room.checkRoom("VIP");
-		System.out.println(result);
 	}
 }

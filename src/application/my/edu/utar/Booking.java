@@ -74,10 +74,11 @@ public class Booking {
 	}
 	
 	public void setBooking() {
-		int numRoom=0;
-	    memberLevel=user.getMemberLevel(userID);
+	    int numRoom = 0;
+	    memberLevel = user.getMemberLevel(userID);
 	    room_type = room.getRoomType(memberLevel);
-	    boolean available=room.checkRoom(room_type);
+	    boolean available = room.checkRoom(room_type);
+
 	    if (available) {
 	        room.displayAvailableRooms(room_type);
 	        int maxRooms;
@@ -90,59 +91,65 @@ public class Booking {
 	        } else {
 	            maxRooms = 1; 
 	        }
+	        
 	        try {
-	        System.out.println("How many rooms do you want to book: ");
-	         numRoom = scanner.nextInt();
-	        scanner.nextLine();
-	        while (numRoom > maxRooms) {
-	            System.out.println("You can only book up to " + maxRooms + " rooms at a time.");
-	            System.out.println("Please enter a valid number of rooms: ");
+	            System.out.println("How many rooms do you want to book: ");
 	            numRoom = scanner.nextInt();
 	            scanner.nextLine();
+	            while (numRoom > maxRooms) {
+	                System.out.println("You can only book up to " + maxRooms + " rooms at a time.");
+	                System.out.println("Please enter a valid number of rooms: ");
+	                numRoom = scanner.nextInt();
+	                scanner.nextLine();
+	            }
+	            
+	            handleRoomSelection(numRoom);
+	        } catch (InputMismatchException e) {
+	            System.out.println("\n============================================");
+	            System.out.println("    Error Message: Invalid Input Format   ");
+	            System.out.println("==========================================");
+	            System.out.println("Please try again ...\n");
+	            bookingMenu();
 	        }
+	    } else {
+	        addToWaitingList("In queue");
+	        user.displayMenu();
+	    }
+	}
+
+	private void handleRoomSelection(int numRoom) {
+	    try {
+	        int availableRooms = room.fetchRoomCount(room_type);
+	        if (numRoom > availableRooms) {
+	            System.out.println("\n======================================================");
+	            System.out.println("  Dear customer,");
+	            System.out.println("  Currently, there are not enough " + room_type + " rooms available for you.");
+	            System.out.println("======================================================");
+
+	            if (memberLevel.equals("VIP")) {
+	                // Handle VIP room selection
+	            } else if (memberLevel.equals("Member")) {
+	                // Handle member room selection
+	            } else {
+	                // Handle non-member room selection
+	            }
+	        }
+	        
+	        ArrayList<Integer> roomIDs = new ArrayList<>();
 	        for (int i = 0; i < numRoom; i++) {
 	            System.out.println("Enter the corresponding Room ID: ");
 	            int roomID = scanner.nextInt();
 	            scanner.nextLine();
 	            roomIDs.add(roomID);
 	        }
+	        
 	        createBooking(roomIDs, userID, numRoom);
-	        }catch(InputMismatchException e) {
-				System.out.println("\n============================================");
-	            System.out.println("    Error Message: Invalid Input Format   ");
-	            System.out.println("==========================================");
-	            System.out.println("Please try again ...\n");
-	            bookingMenu();
-			}
-	    } else {
-	    	waitList.addWaiting(userID);
-	    	 try {
-	             user.initializeConnection();
-	             
-	             // Insert into booking table with status 'In queue'
-	             String bookingQuery = "INSERT INTO booking (userID, roomQuantity, status) VALUES (?, ?, ?)";
-	             PreparedStatement bookingStatement = connection.prepareStatement(bookingQuery);
-	             bookingStatement.setInt(1, userID);
-	             bookingStatement.setInt(2, 0); // No rooms booked
-	             bookingStatement.setString(3, "In queue");
-	             int rowsInserted = bookingStatement.executeUpdate();
-	             
-	             if (rowsInserted > 0) {
-	                 System.out.println("\n======================================================================");
-	                 System.out.println("  Confirmation Message: You have been added to the waiting list");
-	                 System.out.println("======================================================================");
-	             } else {
-	                 System.out.println("\n======================================================================");
-	                 System.out.println("  Error Message: Failed to add to waiting list");
-	                 System.out.println("======================================================================");
-	             }
-	         } catch (SQLException e) {
-	             e.printStackTrace();
-	         }
-	    	 user.displayMenu();
+	    } catch (SQLException e) {
+	        e.printStackTrace();
 	    }
 	}
 	
+
 	public void createBooking(ArrayList<Integer> roomIDs, int userID, int numRoom) {
 	    try {
 	        user.initializeConnection();
@@ -160,12 +167,10 @@ public class Booking {
 	            ResultSet generatedKeys = bookingStatement.getGeneratedKeys();
 	            if (generatedKeys.next()) {
 	                int bookingID = generatedKeys.getInt(1);
-	                
-	                // Insert into bookingRoom table
+
 	                String bookingRoomQuery = "INSERT INTO bookingRoom (bookingID, roomID) VALUES (?, ?)";
 	                PreparedStatement bookingRoomStatement = connection.prepareStatement(bookingRoomQuery);
 	                
-	                // Insert each room into bookingRoom table
 	             // Insert each room into bookingRoom table
 	                for (int roomID : roomIDs) {
 	                    bookingRoomStatement.setInt(1, bookingID);
@@ -192,7 +197,7 @@ public class Booking {
 	    } catch (SQLException e) {
 	        e.printStackTrace();
 	    }
-	    user.displayMenu();
+	   bookingMenu();
 	}
 
 

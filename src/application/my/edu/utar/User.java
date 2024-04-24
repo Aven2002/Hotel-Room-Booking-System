@@ -266,6 +266,7 @@ public boolean isValidPhoneNumber(String phoneNum) {
     return phoneNum.matches("\\d{10,15}");
 }
 
+
 public boolean isValidEmail(String email) {
     return email.matches("[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}");
 }
