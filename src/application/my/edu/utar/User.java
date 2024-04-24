@@ -312,4 +312,57 @@ public String getMemberLevel(int userID) {
     }
     return memberLevel;
 }
+
+public void markExclusiveRewardAsRedeemed(int userID) {
+
+    try {
+        // Write SQL update query
+        String updateQuery = "UPDATE user_account SET exclusiveReward = false WHERE user_id = ?";
+        
+        // Create a prepared statement
+        PreparedStatement preparedStatement = connection.prepareStatement(updateQuery);
+        
+        // Set parameters
+        preparedStatement.setInt(1, userID);
+        
+        // Execute the update query
+        int rowsUpdated = preparedStatement.executeUpdate();
+        
+        if (rowsUpdated > 0) {
+            System.out.println("Exclusive reward marked as redeemed for user with ID " + userID);
+        } else {
+            System.out.println("No user found with ID " + userID);
+        }
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+}
+
+public boolean memberHasExclusiveReward(int userID) {
+    
+    boolean hasExclusiveReward = false;
+
+    try {
+        String query = "SELECT exclusiveReward FROM user_account WHERE user_id = ?";
+
+        PreparedStatement preparedStatement = connection.prepareStatement(query);
+
+        preparedStatement.setInt(1, userID);
+
+        ResultSet resultSet = preparedStatement.executeQuery();
+        
+        // Check if the result set has any rows
+        if (resultSet.next()) {
+        	return hasExclusiveReward;
+        } else {
+            // No user found with the specified ID
+            System.out.println("No user found with ID " + userID);
+        }
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+
+    return false;
+}
+
 }

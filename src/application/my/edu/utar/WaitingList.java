@@ -15,12 +15,13 @@ public class WaitingList {
 		this.connection=user.initializeConnection();
 	}
 	
-	public void addWaiting(int userID) {
+	public void addWaiting(int userID,int bookingID) {
 		
-	    String query = "INSERT INTO waiting_list (userID) VALUES (?)";
+	    String query = "INSERT INTO waiting_list (userID, bookingID) VALUES (?, ?)";
 
 	    try (PreparedStatement statement = connection.prepareStatement(query)) {
 	        statement.setInt(1, userID);
+	        statement.setInt(2, bookingID);
 	        int rowsInserted = statement.executeUpdate();
 	        if (rowsInserted > 0) {
 	        	System.out.println("\n===============================================================================");
