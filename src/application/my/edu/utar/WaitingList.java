@@ -50,7 +50,7 @@ public class WaitingList {
 	        String username = resultSet.getString("username");
 	        Timestamp timestamp = resultSet.getTimestamp("created_at");
 	        String memberLevel=resultSet.getString("memberLevel");
-	        String roomType=room.getRoomType(memberLevel);
+	        String roomType=room.getRoomTypeDependMember(memberLevel);
 
 	        System.out.println("\n==============================================");
 	        System.out.println("                Waiting Status                 ");
@@ -71,21 +71,21 @@ public class WaitingList {
 	}
 
    }
-	public void removeWaiting(int waitListID) {
-	    String query = "DELETE FROM waiting_list WHERE waitListID = ?";
+	public void removeWaiting(int bookingID) {
+	    String query = "DELETE FROM waiting_list WHERE bookingID = ?";
 
 	    try (PreparedStatement statement = connection.prepareStatement(query)) {
-	        statement.setInt(1, waitListID);
+	        statement.setInt(1, bookingID);
 	        int rowsDeleted = statement.executeUpdate();
 
 	        if (rowsDeleted > 0) {
 	        	System.out.println("\n===========================================================");
-	            System.out.println("  Waiting record with ID " + waitListID + " has been removed successfully.");
+	            System.out.println("  Booking with "+bookingID+" has been removed from the waiting list.");
 	            System.out.println("===========================================================");
 	        } else {
-	        	System.out.println("\n=========================================");
-	            System.out.println("  No waiting record found with ID " + waitListID + ".");
-	            System.out.println("=========================================");
+	        	System.out.println("\n=================================================");
+	            System.out.println("  No waiting record found with booking ID " + bookingID + ".");
+	            System.out.println("================================================");
 	        }
 	    } catch (SQLException e) {
 	        e.printStackTrace();
@@ -93,6 +93,20 @@ public class WaitingList {
 	}
 
 
+	public boolean isBookingInWaitingList(int bookingID) {
+        String query = "SELECT * FROM waiting_list WHERE bookingID = ?";
+        
+        try (PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setInt(1, bookingID);
+            ResultSet resultSet = statement.executeQuery();
+            return resultSet.next();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+	
 //	public static void main(String[]args) {
 //		dbConnector db=new dbConnector();
 //		try {

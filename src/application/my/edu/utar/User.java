@@ -13,14 +13,14 @@ public class User{
     private String email;
     private String fullName;
     
-    public static void main(String[]args) {
+    public static void main(String[]args) throws SQLException {
     	User user=new User();
     	user.welcomePage();
     }
     public User() {
     	initializeConnection();
     }
-    public void welcomePage() {
+    public void welcomePage() throws SQLException {
         System.out.println("\n@===================================@");
         System.out.println("| Welcome to Hotel Booking System   |");
         System.out.println("|===================================|");
@@ -71,7 +71,7 @@ public void goodbyeMessage() {
     System.out.println("                               ");
     System.out.println("===============================");
 }
-public void signUpPhase() {
+public void signUpPhase() throws SQLException {
 
         System.out.println("\n=============================");
 		System.out.println("     Account Registration    ");
@@ -191,7 +191,7 @@ public void signUpPhase() {
             }
         }
         // Menu
-        public void displayMenu() {
+        public void displayMenu() throws SQLException {
                 System.out.println("\n@=============================@");
                 System.out.println("|         Main Menu           |");
                 System.out.println("|=============================|");
@@ -217,12 +217,12 @@ public void signUpPhase() {
             }
         }
 
-        public void processChoice(int choice) {
+        public void processChoice(int choice) throws SQLException {
                 switch (choice) {
                     case 1:
                        Room room=new Room();
                        String memberLevel=getMemberLevel(userID);
-                       String room_type=room.getRoomType(memberLevel);
+                       String room_type=room.getRoomTypeDependMember(memberLevel);
                        room.displayAvailableRooms(room_type);
                        displayMenu();
                         break;
