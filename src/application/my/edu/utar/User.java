@@ -15,7 +15,8 @@ public class User{
     
     public static void main(String[]args) throws SQLException {
     	User user=new User();
-    	user.welcomePage();
+    	//user.welcomePage();
+    	user.markExclusiveRewardAsRedeemed(3);
     }
     public User() {
     	initializeConnection();
@@ -317,7 +318,7 @@ public void markExclusiveRewardAsRedeemed(int userID) {
 
     try {
         // Write SQL update query
-        String updateQuery = "UPDATE user_account SET exclusiveReward = false WHERE user_id = ?";
+        String updateQuery = "UPDATE user_account SET exclusiveReward = false WHERE userID = ?";
         
         // Create a prepared statement
         PreparedStatement preparedStatement = connection.prepareStatement(updateQuery);
@@ -328,11 +329,9 @@ public void markExclusiveRewardAsRedeemed(int userID) {
         // Execute the update query
         int rowsUpdated = preparedStatement.executeUpdate();
         
-        if (rowsUpdated > 0) {
-            System.out.println("Exclusive reward marked as redeemed for user with ID " + userID);
-        } else {
-            System.out.println("No user found with ID " + userID);
-        }
+        if (rowsUpdated < 0) {
+        	 System.out.println("No user found with ID " + userID);
+        } 
     } catch (SQLException e) {
         e.printStackTrace();
     }
@@ -340,20 +339,19 @@ public void markExclusiveRewardAsRedeemed(int userID) {
 
 public boolean memberHasExclusiveReward(int userID) {
     
-    boolean hasExclusiveReward = false;
 
     try {
-        String query = "SELECT exclusiveReward FROM user_account WHERE user_id = ?";
+        String query = "SELECT exclusiveReward FROM user_account WHERE userID = ?";
 
         PreparedStatement preparedStatement = connection.prepareStatement(query);
 
         preparedStatement.setInt(1, userID);
 
         ResultSet resultSet = preparedStatement.executeQuery();
-        
         // Check if the result set has any rows
         if (resultSet.next()) {
-        	return hasExclusiveReward;
+        	boolean hasExclusiveReward = resultSet.getBoolean("exclusiveReward");
+            return hasExclusiveReward;
         } else {
             // No user found with the specified ID
             System.out.println("No user found with ID " + userID);
@@ -364,5 +362,7 @@ public boolean memberHasExclusiveReward(int userID) {
 
     return false;
 }
+
+
 
 }

@@ -105,49 +105,6 @@ public class Booking {
 	}
 	
 
-//	public void createBooking(int roomID, int userID, int numRoom, String roomType) {
-//	    try {
-//	        // Insert into booking table
-//	        String bookingQuery = "INSERT INTO booking (userID, roomQuantity, status) VALUES (?, ?, ?)";
-//	        PreparedStatement bookingStatement = connection.prepareStatement(bookingQuery, Statement.RETURN_GENERATED_KEYS);
-//	        bookingStatement.setInt(1, userID);
-//	        bookingStatement.setInt(2, numRoom);
-//	        bookingStatement.setString(3, "Checked In");
-//	        int rowsInserted = bookingStatement.executeUpdate();
-//
-//	        if (rowsInserted > 0) {
-//	            // Get the generated booking ID
-//	            ResultSet generatedKeys = bookingStatement.getGeneratedKeys();
-//	            if (generatedKeys.next()) {
-//	                int bookingID = generatedKeys.getInt(1);
-//
-//	                String bookingRoomQuery = "INSERT INTO bookingRoom (bookingID, roomID) VALUES (?, ?)";
-//	                PreparedStatement bookingRoomStatement = connection.prepareStatement(bookingRoomQuery);
-//	                
-//	                // Insert the single room into bookingRoom table
-//	                bookingRoomStatement.setInt(1, bookingID);
-//	                bookingRoomStatement.setInt(2, roomID);
-//	                
-//	                // Execute the insert
-//	                int result = bookingRoomStatement.executeUpdate();
-//	                
-//	                if (result > 0) {
-//	                    System.out.println("\n===========================================================");
-//	                    System.out.println("    Confirmation Message: Booking created successfully");
-//	                    System.out.println("===========================================================");
-//	                    System.out.println("Room ID: " + roomID +"    Room Type : "+roomType);
-//	                    room.updateRoomStatus_booked(roomID);
-//	                } else {
-//	                    System.out.println("\n======================================================");
-//	                    System.out.println("  Error Message: Failed to create booking");
-//	                    System.out.println("======================================================");
-//	                }
-//	            }
-//	        }
-//	    } catch (SQLException e) {
-//	        e.printStackTrace();
-//	    }
-//	}
 
 	public void createBooking(ArrayList<Integer> allocatedRoomIDs, int userID) {
 	    try {
@@ -211,7 +168,6 @@ public class Booking {
 	public void setBooking() throws SQLException {
 		memberLevel=user.getMemberLevel(userID);
 		numRoomToBook=getNumOfRoomToBook(memberLevel);
-		System.out.println("h:"+numRoomToBook);
 	    memberLevel = user.getMemberLevel(userID);
 	    roomType = room.getRoomTypeDependMember(memberLevel);
 
@@ -221,7 +177,7 @@ public class Booking {
 	    int availableStandardRoom = room.fetchRoomCount("Standard");
 	    int totalAvailableRooms=availableVipRoom+availableDeluxeRoom+availableStandardRoom;
 	    int remainingRooms = numRoomToBook;
-	    if(numRoomToBook>totalAvailableRooms) {
+	    if(numRoomToBook<=totalAvailableRooms) {
 	    switch (memberLevel) {
 	    case "VIP":
 	        if (numRoomToBook <= availableVipRoom) {
@@ -261,55 +217,58 @@ public class Booking {
 	                }
 	            }
 	        }
-	        System.out.println(allocatedRoomIDs);
 	        // After allocating rooms, create the booking
 	        createBooking(allocatedRoomIDs, userID);
 	        break;
-	    case "Normal":
-	         remainingRooms = numRoomToBook;
+	    case "Member":
+	        remainingRooms = numRoomToBook;
+	        if (numRoomToBook <= availableDeluxeRoom) {
+	            // Allocate all requested rooms from Deluxe rooms if available
+	            List<Integer> deluxeRoomIDs = room.fetchAvailableRoomIDs("Deluxe", numRoomToBook);
+	            int roomsToAdd = Math.min(numRoomToBook, deluxeRoomIDs.size());
+	            allocatedRoomIDs.addAll(deluxeRoomIDs.subList(0, roomsToAdd));
+	            remainingRooms -= roomsToAdd;
+	        } else {
+	            // Check if VIP rooms are available and the member has an exclusive reward
+	            if (remainingRooms > 0 && user.memberHasExclusiveReward(userID)) {
+	                List<Integer> vipRoomIDs = room.fetchAvailableRoomIDs("VIP", remainingRooms);
+	                int vipRoomsToAdd = Math.min(remainingRooms, vipRoomIDs.size());
+	                allocatedRoomIDs.addAll(vipRoomIDs.subList(0, vipRoomsToAdd));
+	                remainingRooms -= vipRoomsToAdd;
 
-	        // Check if Deluxe rooms are available
-	        List<Integer> deluxeRoomIDs = room.fetchAvailableRoomIDs("Deluxe", remainingRooms);
-	        int deluxeRoomsToAdd = Math.min(remainingRooms, deluxeRoomIDs.size());
-	        allocatedRoomIDs.addAll(deluxeRoomIDs.subList(0, deluxeRoomsToAdd));
-	        remainingRooms -= deluxeRoomsToAdd;
+	                // Mark the exclusive reward as redeemed
+	                user.markExclusiveRewardAsRedeemed(userID);
+	            }
 
-	        // Check if VIP rooms are available and the member has an exclusive reward
-	        if (remainingRooms > 0 && user.memberHasExclusiveReward(userID)) {
-	            List<Integer> vipRoomIDs = room.fetchAvailableRoomIDs("VIP", remainingRooms);
-	            int vipRoomsToAdd = Math.min(remainingRooms, vipRoomIDs.size());
-	            allocatedRoomIDs.addAll(vipRoomIDs.subList(0, vipRoomsToAdd));
-	            remainingRooms -= vipRoomsToAdd;
-
-	            // Mark the exclusive reward as redeemed
-	            user.markExclusiveRewardAsRedeemed(userID);
-
-	            // If VIP rooms are unavailable, allocate Standard rooms
-	            if (vipRoomsToAdd < remainingRooms) {
+	            // Allocate remaining rooms as Standard rooms if necessary
+	            if (remainingRooms > 0) {
 	                List<Integer> standardRoomIDs = room.fetchAvailableRoomIDs("Standard", remainingRooms);
 	                int standardRoomsToAdd = Math.min(remainingRooms, standardRoomIDs.size());
 	                allocatedRoomIDs.addAll(standardRoomIDs.subList(0, standardRoomsToAdd));
 	                remainingRooms -= standardRoomsToAdd;
 	            }
 	        }
+	        
+	        // Create the booking
+	        createBooking(allocatedRoomIDs, userID);
+	        break; 
+	    case "Non- member":
+	        List<Integer> allocatedRoomIDs = new ArrayList<>();
 
-	        // Allocate remaining rooms as Standard rooms if necessary
-	        if (remainingRooms > 0) {
-	            List<Integer> standardRoomIDs = room.fetchAvailableRoomIDs("Standard", remainingRooms);
-	            int standardRoomsToAdd = Math.min(remainingRooms, standardRoomIDs.size());
-	            allocatedRoomIDs.addAll(standardRoomIDs.subList(0, standardRoomsToAdd));
-	            remainingRooms -= standardRoomsToAdd;
-	        }
-
-	        createBooking((ArrayList<Integer>) allocatedRoomIDs, userID);
+	        // Check if Standard rooms are available
+	        List<Integer> standardRoomIDs = room.fetchAvailableRoomIDs("Standard", 1); // Non-member can book only one room
+	        if (!standardRoomIDs.isEmpty()) {
+	            // If Standard rooms are available, allocate the room
+	            allocatedRoomIDs.addAll(standardRoomIDs);
+	            createBooking((ArrayList<Integer>) allocatedRoomIDs, userID);
+	        } 
 	        break;
-
-	}
-	    }else {
+	    }
+	   }else {
 	    	createBookingInQueue(userID);
 	    	waitList.addWaiting(userID,bookingID);
 	    }
-
+	   
 	}
 
 
